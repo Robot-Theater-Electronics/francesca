@@ -3,11 +3,11 @@
 ## software for audio LAN installation ##
 
 ### requirements ###
-for midi input
+for midi input (so the server side)
 
 `pip3 install mido`
 
-for websockets to communicate to the radios in LAN
+for websockets to communicate to the radios in LAN (for the server and the clients)
 
 `pip3 install websockets`
 
