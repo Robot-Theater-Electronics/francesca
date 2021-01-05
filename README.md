@@ -3,11 +3,11 @@
 ## software for audio LAN installation ##
 
 ### requirements ###
-for midi input
+for midi input (so the server side)
 
 `pip3 install mido`
 
-for websockets to communicate to the radios in LAN
+for websockets to communicate to the radios in LAN (for the server and the clients)
 
 `pip3 install websockets`
 
@@ -20,3 +20,8 @@ The server will be listening to any incoming midi device that is connected (befo
 `python3 client.py` will launch a client that receives the command via websockets
 
 
+## troubleshooting ## 
+
+#### the clients are not connecting to the server? ####
+  - Make sure the ip settings in the config.ini file is that of the machine running the server
+  - Make sure the server has no firewall blocking the connections 
