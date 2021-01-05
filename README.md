@@ -1,4 +1,4 @@
-# Francesca Woodman Theater Performance #
+# Francesca Woodman Theater Performance (work in progress)#
 
 ## software for audio LAN installation ##
 
