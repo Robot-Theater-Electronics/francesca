@@ -6,9 +6,14 @@ import asyncio
 import socket
 import websockets
 import json
+import configparser
+
+# parse config
+config = configparser.ConfigParser()
+config.read('config.ini')
+uri = "ws://" + config['server'].get('ip') + ":8765"
 
 async def woodmanClient():
-    uri = "ws://localhost:8765"
     async with websockets.connect(uri) as websocket:
         msg = json.dumps({"client": socket.gethostname()})
         await websocket.send(msg)

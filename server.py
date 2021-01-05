@@ -5,9 +5,16 @@ import websockets
 import json
 import mido
 import threading, queue
+import configparser
 
 q = queue.Queue()
 RADIOS = set()
+
+# parse config
+config = configparser.ConfigParser()
+config.read('config.ini')
+uri = "ws://" + config['server'].get('ip') + ":8765"
+
 
 async def register(websocket):
     RADIOS.add(websocket)
@@ -43,7 +50,6 @@ async def francescaServer(websocket, path):
         await unregister(websocket)
 
 async def hello():
-    uri = "ws://localhost:8765"
     async with websockets.connect(uri) as websocket:
         await websocket.send("Hello world!")
         
@@ -54,7 +60,7 @@ def midiIn():
             print(q.qsize())
 
 async def websocketSend(msg):
-    async with websockets.connect("ws://localhost:8765") as websocket:
+    async with websockets.connect(uri) as websocket:
         #while True:
         #await websocket.send(json)  
         await radioCommand(msg)
@@ -71,7 +77,7 @@ async def getQueue(debug:False):
     
 async def main():
     print("\nFrancesca server ON...\n")
-    start_server = websockets.serve(francescaServer, "localhost", 8765)
+    start_server = websockets.serve(francescaServer, config['server'].get('ip'), 8765)
     threading.Thread(target=midiIn, daemon=True).start()
     await asyncio.gather( start_server, getQueue(True) )
 
