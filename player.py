@@ -17,7 +17,7 @@ class Player():
         
     def play(self, radio, num, debug=False):
         """Play a music file by mapping the incomming command to a music file as defined in the config.ini"""
-        if self._config['radios'].get(str(radio)) == self._name:
+        if self._config['radios'].get(str(radio)) == self._name or self._config['radios'].get(str(radio)) == 'all':
             if self._currentComm != num:
                 self._currentComm = num
                 m.music.load("music_files/" + self._config['midi_to_music'].get(str(num)) )
