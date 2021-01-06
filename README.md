@@ -15,7 +15,6 @@ for playing the music files
 
 `pip3 install simpleaudio`
 
-`pip3 install pydub`
 
 after having installed the required python libraries you can run with
 
