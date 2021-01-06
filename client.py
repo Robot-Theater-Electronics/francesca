@@ -28,7 +28,7 @@ async def woodmanClient(debug=False):
             async for msg in websocket:
                 decoded = json.loads(msg)
                 if 'comm' in decoded:
-                    player.play(decoded['radio'], decoded['comm'])
+                    player.play(decoded['radio'], decoded['comm'], True)
                 if debug:
                     print(msg)
                 
