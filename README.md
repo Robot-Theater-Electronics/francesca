@@ -13,7 +13,7 @@ for websockets to communicate to the radios in LAN (for the server and the clien
 
 for playing the music files 
 
-`pip3 install simpleaudio`
+`pip3 install pygame`
 
 
 after having installed the required python libraries you can run with
