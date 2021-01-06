@@ -46,6 +46,8 @@ async def francescaServer(websocket, path):
         async for msg in websocket:     
             print(msg)
             #await radioCommand()
+    except websockets.ConnectionClosed:
+        print("connection error")
     finally:
         await unregister(websocket)
 

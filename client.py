@@ -20,20 +20,28 @@ current_command = -1
 player = Player(hostname, config)
 
 async def woodmanClient(debug=False):
-    async with websockets.connect(uri) as websocket:
-        msg = json.dumps({"client": hostname})
-        await websocket.send(msg)
-        
-        try:
-            async for msg in websocket:
-                decoded = json.loads(msg)
-                if 'comm' in decoded:
-                    player.play(decoded['radio'], decoded['comm'], True)
-                if debug:
-                    print(msg)
-                
-        finally:
-            print("websoket connection closed")
+    try:
+        async with websockets.connect(uri) as websocket:
+            msg = json.dumps({"client": hostname})
+            await websocket.send(msg)
+            
+            try:
+                async for msg in websocket:
+                    decoded = json.loads(msg)
+                    if 'comm' in decoded:
+                        player.play(decoded['radio'], decoded['comm'], True)
+                    if debug:
+                        print(msg)
+            except websockets.ConnectionClosed:
+                print("connection error")             
+            finally:
+                print("websoket connection closed, trying to reconnect...")
+
+    except ConnectionRefusedError:
+        print("server not booted")
+    finally:
+        await asyncio.sleep(0.2)
+            
     
 
 asyncio.get_event_loop().run_until_complete(woodmanClient(True))
