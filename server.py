@@ -6,6 +6,7 @@ import json
 import mido
 import threading, queue
 import configparser
+from web import run
 
 q = queue.Queue()
 RADIOS = set()
@@ -81,6 +82,7 @@ async def main():
     print("\nFrancesca server ON...\n")
     start_server = websockets.serve(francescaServer, config['server'].get('ip'), 8765)
     threading.Thread(target=midiIn, daemon=True).start()
+    threading.Thread(target=run, daemon=True).start()
     await asyncio.gather( start_server, getQueue(True) )
 
 asyncio.run(main())

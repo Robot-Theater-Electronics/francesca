@@ -13,9 +13,9 @@ from player import Player
 # parse config
 config = configparser.ConfigParser()
 config.read('config.ini')
-uri = "ws://" + config['server'].get('ip') + ":8765"
+uri = "ws://" + config['server'].get('ip') + ":8080"
 
-hostname = socket.gethostname();
+hostname = socket.gethostname()
 current_command = -1
 player = Player(hostname, config)
 
