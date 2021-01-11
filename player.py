@@ -21,7 +21,7 @@ class Player():
             if self._currentComm != num:
                 self._currentComm = num
                 m.music.load("music_files/" + self._config['midi_to_music'].get(str(num)) )
-                m.music.play(fade_ms=self._config['client'].getint('fadein'))
+                m.music.play()
                 if debug:
                     print('playing', radio, num)
                 #self._playobj.wait_done()

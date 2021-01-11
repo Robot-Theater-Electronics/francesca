@@ -31,7 +31,7 @@ async def websocket_handler(request):
     async for msg in ws:
         print('ws server ms:', msg)
         for _ws in RADIOS:
-            await _ws.send_json(msg.data)
+            await _ws.send_str(msg.data)
             
         if msg.type == aiohttp.WSMsgType.TEXT:
             if msg.data == 'close':
