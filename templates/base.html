@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        <div>
+            <h1>{{ title }}</h1>
+        </div>
+
+        <div>
+            <p>Date now: {{ current_date }}</p>
+        </div>
+                <div>
+            <p>Current connected radios: {{ connected }}</p>
+        </div>
+        <div>
+            {% for radio in radios %}
+            <div>radio</div>
+            {% endfor %}
+        </div>
+        <script src='js/ws.js'></script>
+    </body>
+</html>

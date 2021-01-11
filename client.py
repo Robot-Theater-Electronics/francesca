@@ -25,8 +25,7 @@ async def woodmanClient(debug=False):
         async for msg in ws:
             
             if msg.data != 'disconected':
-                decoded = json.loads(msg.data)
-                decoded = json.loads(decoded)
+                decoded = msg.json()
                 if 'comm' in decoded:
                     player.play(decoded['radio'], 
                                 decoded['comm'], True)

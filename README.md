@@ -11,6 +11,10 @@ for websockets to communicate to the radios in LAN (for the server and the clien
 
 `pip3 install aiohttp`
 
+for the web interface
+
+`pip3 install aiohttp_jinja2`
+
 for playing the music files 
 
 `pip3 install pygame`

@@ -1,8 +1,12 @@
 import aiohttp
 from aiohttp import web
+import aiohttp_jinja2
+import jinja2
 import asyncio
 import mido
 import configparser
+
+import datetime
 
 #q = queue.Queue()
 queue = asyncio.Queue()
@@ -12,10 +16,11 @@ RADIOS = []
 ######################
 ## Aiohttp Handlers ##
 ######################
-
+@aiohttp_jinja2.template('base.html')
 async def handle(request):
-    text = "Francesca Woodman's Alarm Clocks Server"
-    return web.Response(text=text)
+    title = "Francesca Woodman's Alarm Clocks Server"
+    time = datetime.datetime.now()
+    return {'title': title, 'current_date': time, 'radios': RADIOS, 'connected': len(RADIOS) }
    
 async def websocket_handler(request):
     ws = web.WebSocketResponse()
@@ -72,7 +77,13 @@ async def radioCommand(msg):
 
 app = web.Application()
 app.add_routes([web.get('/', handle),
-                web.get('/ws', websocket_handler)])    
+                web.get('/ws', websocket_handler),
+                web.static('/js', 'js')
+                ]) 
+
+aiohttp_jinja2.setup(
+    app, loader=jinja2.FileSystemLoader("templates")
+)
 
 if __name__ == '__main__':
     #threading.Thread(target=midiIn, daemon=True).start()
