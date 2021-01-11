@@ -31,7 +31,12 @@ async def websocket_handler(request):
     async for msg in ws:
         print('ws server ms:', msg)
         for _ws in RADIOS:
-            await _ws.send_str(msg.data)
+            try:
+                await _ws.send_str(msg.data)
+            except ConnectionResetError:
+                await _ws.close()
+                RADIOS.remove(_ws)
+                print('on send', ConnectionResetError)
             
         if msg.type == aiohttp.WSMsgType.TEXT:
             if msg.data == 'close':
@@ -42,7 +47,12 @@ async def websocket_handler(request):
 
     RADIOS.remove(ws)
     for _ws in RADIOS:
-        await _ws.send_str('disconected')
+        try:
+            await _ws.send_str('disconected')
+        except ConnectionResetError:
+            await _ws.close()
+            print('on remove', ConnectionResetError)
+    
 
     return ws
 
@@ -71,7 +81,7 @@ async def radioCommand(msg):
             #while True:
             #await websocket.send(json)
             #json = json.dumps({"radio": msg.channel+1, "comm": msg.note})
-            await ws.send_json({"radio": msg.channel+1, "comm": msg.note})      
+            await ws.send_json({"radio": msg.channel+1, "comm": msg.note, "extra_radios": msg.velocity })      
             queue.task_done()
         
 

@@ -29,7 +29,8 @@ async def woodmanClient(debug=False):
                 decoded = msg.json()
                 if 'comm' in decoded:
                     player.play(decoded['radio'], 
-                                decoded['comm'], True)
+                                decoded['comm'],
+                                decoded['extra_radios'], True)
                 if debug:
                     print(msg)
 
