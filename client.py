@@ -8,7 +8,8 @@ from player import Player
 # parse config
 config = configparser.ConfigParser()
 config.read('config.ini')
-uri = "http://0.0.0.0:8080/ws"
+ip = config['server'].get('ip')
+uri = f'http://{ip}:8080/ws'
 
 hostname = socket.gethostname()
 current_command = -1
