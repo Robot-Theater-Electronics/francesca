@@ -1,88 +1,82 @@
-#!/usr/bin/env python3
-
+import aiohttp
+from aiohttp import web
 import asyncio
-import websockets
-import json
 import mido
-import threading, queue
 import configparser
-from web import run
 
-q = queue.Queue()
-RADIOS = set()
-
-# parse config
-config = configparser.ConfigParser()
-config.read('config.ini')
-uri = "ws://" + config['server'].get('ip') + ":8765"
+#q = queue.Queue()
+queue = asyncio.Queue()
+RADIOS = []
 
 
-async def register(websocket):
-    RADIOS.add(websocket)
-    await notify_radios()
+######################
+## Aiohttp Handlers ##
+######################
 
-
-async def unregister(websocket):
-    RADIOS.remove(websocket)
-    await notify_radios()
-
-def radio_event():
-    return json.dumps({"type": "RADIOS", "count": len(RADIOS)})
-
-async def notify_radios():
-    if RADIOS:  # asyncio.wait doesn't accept an empty list
-        message = radio_event()
-        await asyncio.wait([radio.send(message) for radio in RADIOS])
+async def handle(request):
+    text = "Francesca Woodman's Alarm Clocks Server"
+    return web.Response(text=text)
+   
+async def websocket_handler(request):
+    ws = web.WebSocketResponse()
+    await ws.prepare(request)
     
-async def radioCommand(msg):
-    if RADIOS:  # asyncio.wait doesn't accept an empty list
-        message = json.dumps({"radio": msg.channel+1, "comm": msg.note})
-        await asyncio.wait([radio.send(message) for radio in RADIOS])
-
-async def francescaServer(websocket, path):
-    loop = asyncio.get_running_loop()
-    await register(websocket)
-    #loop.run_in_executor(None, midiIn) 
-    try:
-        async for msg in websocket:     
-            print(msg)
-            #await radioCommand()
-    except websockets.ConnectionClosed:
-        print("connection error")
-    finally:
-        await unregister(websocket)
-
-async def hello():
-    async with websockets.connect(uri) as websocket:
-        await websocket.send("Hello world!")
+    RADIOS.append(ws)    
         
+    async for msg in ws:
+        print('ws server ms:', msg)
+        for _ws in RADIOS:
+            await _ws.send_json(msg.data)
+            
+        if msg.type == aiohttp.WSMsgType.TEXT:
+            if msg.data == 'close':
+                await ws.close()
+        elif msg.type == aiohttp.WSMsgType.ERROR:
+            print('ws connection closed with exception %s' %
+                  ws.exception())
+
+    RADIOS.remove(ws)
+    for _ws in RADIOS:
+        await _ws.send_str('disconected')
+
+    return ws
+
+##########
+## MIDI ##
+##########
+
 def midiIn():   
     with mido.open_input() as port:
         for msg in port:
-            q.put(msg)
-            print(q.qsize())
-
-async def websocketSend(msg):
-    async with websockets.connect(uri) as websocket:
-        #while True:
-        #await websocket.send(json)  
-        await radioCommand(msg)
-
+            queue.put_nowait(msg)
+            print('queue size: ', queue.qsize())
+            
 async def getQueue(debug:False):
     while True: #investigate if loop is needed
-        if q.qsize() > 0:
-            item = q.get()
+        if queue.qsize() > 0:
+            item = await queue.get()
             if debug:
-                print(item)
-            await websocketSend(item)
-        await asyncio.sleep(0.01)
+                print('queue item: ', item)
+            await radioCommand(item)
+        await asyncio.sleep(0.01)            
 
-    
-async def main():
-    print("\nFrancesca server ON...\n")
-    start_server = websockets.serve(francescaServer, config['server'].get('ip'), 8765)
-    threading.Thread(target=midiIn, daemon=True).start()
-    threading.Thread(target=run, daemon=True).start()
-    await asyncio.gather( start_server, getQueue(True) )
+async def radioCommand(msg):
+        session = aiohttp.ClientSession()
+        async with session.ws_connect("http://0.0.0.0:8080/ws") as ws:
+            #while True:
+            #await websocket.send(json)
+            #json = json.dumps({"radio": msg.channel+1, "comm": msg.note})
+            await ws.send_json({"radio": msg.channel+1, "comm": msg.note})      
+            queue.task_done()
+        
 
-asyncio.run(main())
+app = web.Application()
+app.add_routes([web.get('/', handle),
+                web.get('/ws', websocket_handler)])    
+
+if __name__ == '__main__':
+    #threading.Thread(target=midiIn, daemon=True).start()
+    loop = asyncio.get_event_loop()
+    loop.run_in_executor(None, midiIn)
+    asyncio.run_coroutine_threadsafe(getQueue(True), loop)
+    web.run_app(app)

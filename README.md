@@ -9,7 +9,7 @@ for midi input (so the server side)
 
 for websockets to communicate to the radios in LAN (for the server and the clients)
 
-`pip3 install websockets`
+`pip3 install aiohttp`
 
 for playing the music files 
 
@@ -28,5 +28,5 @@ The server will be listening to any incoming midi device that is connected (befo
 ## troubleshooting ## 
 
 #### the clients are not connecting to the server? ####
-  - Make sure the ip settings in the config.ini file is that of the machine running the server
-  - Make sure the server has no firewall blocking the connections 
+  - Make sure the performance router is ON and the computer running the server is connected to it
+  - Make sure the computer running the server has no firewall blocking the connections 

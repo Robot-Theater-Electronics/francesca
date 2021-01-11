@@ -1,47 +1,42 @@
-#!/usr/bin/env python3
-
-# WS client example
-
 import asyncio
-import socket
-import websockets
 import json
 import configparser
+import aiohttp
+import socket
 from player import Player
-#import threading
 
 # parse config
 config = configparser.ConfigParser()
 config.read('config.ini')
-uri = "ws://" + config['server'].get('ip') + ":8080"
+uri = "http://0.0.0.0:8080/ws"
 
 hostname = socket.gethostname()
 current_command = -1
 player = Player(hostname, config)
 
 async def woodmanClient(debug=False):
-    try:
-        async with websockets.connect(uri) as websocket:
-            msg = json.dumps({"client": hostname})
-            await websocket.send(msg)
-            
-            try:
-                async for msg in websocket:
-                    decoded = json.loads(msg)
-                    if 'comm' in decoded:
-                        player.play(decoded['radio'], decoded['comm'], True)
-                    if debug:
-                        print(msg)
-            except websockets.ConnectionClosed:
-                print("connection error")             
-            finally:
-                print("websoket connection closed, trying to reconnect...")
-
-    except ConnectionRefusedError:
-        print("server not booted")
-    finally:
-        await asyncio.sleep(0.2)
-            
     
+    session = aiohttp.ClientSession()
+    
+    async with session.ws_connect(uri) as ws:
+        
+        await ws.send_json(hostname)
 
-asyncio.get_event_loop().run_until_complete(woodmanClient(True))
+        async for msg in ws:
+            
+            if msg.data != 'disconected':
+                decoded = json.loads(msg.data)
+                decoded = json.loads(decoded)
+                if 'comm' in decoded:
+                    player.play(decoded['radio'], 
+                                decoded['comm'], True)
+                if debug:
+                    print(msg)
+
+            if msg.type in (aiohttp.WSMsgType.CLOSED,
+                            aiohttp.WSMsgType.ERROR):
+                break
+
+    
+loop = asyncio.get_event_loop()
+loop.run_until_complete(woodmanClient(True))
