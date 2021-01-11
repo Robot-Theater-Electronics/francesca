@@ -1,10 +1,11 @@
 let socket = new WebSocket("ws://0.0.0.0:8080/ws");
 
 socket.onmessage = function(event) {
-  alert(`[message] Data received from server: ${event.data}`);
+  console.log(`[message] Data received from server: ${event.data}`);
+  window.location.reload();
 };
 
 
 socket.onerror = function(error) {
-  alert(`[error] ${error.message}`);
+  console.log(`[error] ${error.message}`);
 };
