@@ -26,7 +26,7 @@ async def woodmanClient(debug=False):
 
         async for msg in ws:
             
-            if msg.data != 'disconnected':
+            if msg.type == aiohttp.WSMsgType.TEXT:
                 decoded = msg.json()
                 if 'comm' in decoded:
                     player.play(decoded['radio'], 

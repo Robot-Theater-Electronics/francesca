@@ -14,6 +14,12 @@ socket.onmessage = function(event) {
           len.innerText = radios.length;
           showRadios();
           console.log(radios)
+        } else if ( json['type'] == "disconnected") {
+          radios.splice(radios.indexOf(json['ip']), 1);
+          status = document.getElementById('len');
+          len.innerText = radios.length;
+          showRadios();
+          console.log(radios)
         } else {
           if (json['type'] == "error") {
             log.innerHTML += "<span style='color: red'><b>" + json['hostname'] + ":</b> " + json['msg'] + "</span><br>";
@@ -40,6 +46,6 @@ function updateRadios() {
 function showRadios() {
   let container = document.getElementById('radios');
   radios.forEach(function(e) {
-    container.innerHTML += "<p>" + e + "</p>";
+    container.innerHTML = "<p>" + e + "</p>";
   });
 }

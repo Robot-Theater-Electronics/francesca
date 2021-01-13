@@ -11,7 +11,7 @@ import datetime
 #q = queue.Queue()
 queue = asyncio.Queue()
 RADIOS = []
-REMOTES = []
+REMOTES = {}
 
 
 ######################
@@ -21,22 +21,23 @@ REMOTES = []
 async def handle(request):
     title = "Francesca Woodman's Alarm clocks Server"
     time = datetime.datetime.now()
-    return {'title': title, 'current_date': time, 'radios': REMOTES, 'connected': len(RADIOS) }
+    return {'title': title, 'current_date': time, 'radios': REMOTES, 'connected': len(REMOTES) }
    
 async def websocket_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
     RADIOS.append(ws) 
-    REMOTES.append(request.remote)
+    
+    if request.remote not in REMOTES and request.remote != '127.0.0.1':
+        REMOTES[request.remote] = ws
         
     async for msg in ws:
-        print('ws server ms:', msg)
-        for _ws in RADIOS:
+        print('ws server msg:', msg)
+        for _ws in REMOTES:
             try:
-                await _ws.send_str(msg.data)
+                await REMOTES[_ws].send_str(msg.data)
             except ConnectionResetError:
-                await _ws.close()
-                #RADIOS.remove(_ws)
+                await REMOTES[_ws].close()
                 print('on send', ConnectionResetError)
             
         if msg.type == aiohttp.WSMsgType.TEXT:
@@ -47,16 +48,22 @@ async def websocket_handler(request):
                   ws.exception())
 
     RADIOS.remove(ws)
-    REMOTES.remove(request.remote)
-    for _ws in RADIOS:
+    pop = None
+    #if request.remote in REMOTES:
+        #REMOTES.pop(request.remote)
+    for _ws in REMOTES:
         try:
-            print(len(RADIOS))
-            print(_ws.closed)
-            await _ws.send_str('disconnected')
+            print(len(REMOTES))
+            print(REMOTES[_ws].closed)
+            await REMOTES[_ws].send_json({'type': "disconnected", 'ip': request.remote})
         except ConnectionResetError:
-            await _ws.close()
+            await REMOTES[_ws].close()
+            pop = _ws
             print('on remove', ConnectionResetError)
-
+            
+    if pop != None:
+        REMOTES.pop(pop)
+    
     return ws
 
 ##########
