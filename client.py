@@ -4,6 +4,7 @@ import configparser
 import aiohttp
 import socket
 import subprocess
+import time
 from player import Player
 
 # parse config
@@ -17,36 +18,45 @@ current_command = -1
 player = Player(hostname)
 
 async def woodmanClient(debug=False):
-    
-    session = aiohttp.ClientSession()
-    
-    async with session.ws_connect(uri) as ws:
-        
-        await ws.send_json({'type': "conn", 'hostname': hostname})
-
-        async for msg in ws:
+    connected = False
+    while not connected:
+        try:
+            session = aiohttp.ClientSession()
             
-            if msg.type == aiohttp.WSMsgType.TEXT:
-                decoded = msg.json()
-                if 'comm' in decoded:
-                    player.play(decoded['radio'], 
-                                decoded['comm'],
-                                decoded['extra_radios'], True)
-                    if player._error != '':
-                        await ws.send_json({'type': "error", 'hostname': hostname, 'msg': player._error})
-                        player._error = ''
+            async with session.ws_connect(uri) as ws:
+                
+                connected = True
+                
+                await ws.send_json({'type': "conn", 'hostname': hostname})
+        
+                async for msg in ws:
                     
-                if 'bash' in decoded:
-                    if decoded['bash'] == 'pull':
-                        git = subprocess.run('./gitpull.sh', capture_output=True)
-                        await ws.send_json({'type': "bash", 'hostname': hostname, 'msg': git.stdout.decode('utf-8').strip()})
-                    
-                if debug:
-                    print(msg)
-
-            if msg.type in (aiohttp.WSMsgType.CLOSED,
-                            aiohttp.WSMsgType.ERROR):
-                break
+                    if msg.type == aiohttp.WSMsgType.TEXT:
+                        decoded = msg.json()
+                        if 'comm' in decoded:
+                            player.play(decoded['radio'], 
+                                        decoded['comm'],
+                                        decoded['extra_radios'], True)
+                            if player._error != '':
+                                await ws.send_json({'type': "error", 'hostname': hostname, 'msg': player._error})
+                                player._error = ''
+                            
+                        if 'bash' in decoded:
+                            if decoded['bash'] == 'pull':
+                                git = subprocess.run('./gitpull.sh', capture_output=True)
+                                await ws.send_json({'type': "bash", 'hostname': hostname, 'msg': git.stdout.decode('utf-8').strip()})
+                            
+                        if debug:
+                            print(msg)
+        
+                    if msg.type in (aiohttp.WSMsgType.CLOSED,
+                                    aiohttp.WSMsgType.ERROR):
+                        break
+        except :
+            print("reconnecting..")
+            await session.close()
+        
+        time.sleep(1)
 
     
 loop = asyncio.get_event_loop()

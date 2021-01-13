@@ -4,7 +4,7 @@ import aiohttp_jinja2
 import jinja2
 import asyncio
 import mido
-import configparser
+import os
 
 import datetime
 
@@ -52,20 +52,11 @@ async def websocket_handler(request):
                   ws.exception())
 
     closed = []
-    #if request.remote in REMOTES:
-    #REMOTES.pop(request.remote)
+
     for _ws in REMOTES:
         if REMOTES[_ws].closed:
-            #await REMOTES[_ws].send_json({'type': "disconnected", 'ip': _ws})
             await REMOTES[_ws].close()
             closed.append(_ws)
-            #print(len(REMOTES))
-            #print(REMOTES[_ws].closed)
-        #except ConnectionResetError:
-            #await REMOTES[_ws].send_json({'type': "disconnected", 'ip': _ws})
-            #await REMOTES[_ws].close()
-            #pop = _ws
-            #print('on remove', ConnectionResetError)
     
     for c in closed:
         if c == '127.0.0.1':
@@ -109,6 +100,10 @@ async def radioCommand(msg):
             await ws.send_json({"radio": msg.channel+1, "comm": msg.note, "extra_radios": msg.velocity })      
             queue.task_done()
         
+
+##########
+## WEBA ##
+##########
 
 app = web.Application()
 app.add_routes([web.get('/', handle),
