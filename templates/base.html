@@ -14,11 +14,11 @@
             <button onclick='updateRadios()'>Update all radios</button>
         </div>
                 <div>
-            <p>Current connected radios: {{ connected }}</p>
+            <p>Current connected radios: <span id='len'>{{ connected }}</span></p>
         </div>
-        <div>
+        <div id='radios'>
             {% for radio in radios %}
-            <div>radio</div>
+            <div> {{ radio }}</div>
             {% endfor %}
         </div>
         <hr/>

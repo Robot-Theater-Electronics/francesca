@@ -11,6 +11,7 @@ import datetime
 #q = queue.Queue()
 queue = asyncio.Queue()
 RADIOS = []
+REMOTES = []
 
 
 ######################
@@ -18,15 +19,15 @@ RADIOS = []
 ######################
 @aiohttp_jinja2.template('base.html')
 async def handle(request):
-    title = "Francesca Woodman's Alarm Clocks Server"
+    title = "Francesca Woodman's Alarm clocks Server"
     time = datetime.datetime.now()
-    return {'title': title, 'current_date': time, 'radios': RADIOS, 'connected': len(RADIOS) }
+    return {'title': title, 'current_date': time, 'radios': REMOTES, 'connected': len(RADIOS) }
    
 async def websocket_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
-    
-    RADIOS.append(ws)    
+    RADIOS.append(ws) 
+    REMOTES.append(request.remote)
         
     async for msg in ws:
         print('ws server ms:', msg)
@@ -35,7 +36,7 @@ async def websocket_handler(request):
                 await _ws.send_str(msg.data)
             except ConnectionResetError:
                 await _ws.close()
-                RADIOS.remove(_ws)
+                #RADIOS.remove(_ws)
                 print('on send', ConnectionResetError)
             
         if msg.type == aiohttp.WSMsgType.TEXT:
@@ -46,9 +47,12 @@ async def websocket_handler(request):
                   ws.exception())
 
     RADIOS.remove(ws)
+    REMOTES.remove(request.remote)
     for _ws in RADIOS:
         try:
-            await _ws.send_str('disconected')
+            print(len(RADIOS))
+            print(_ws.closed)
+            await _ws.send_str('disconnected')
         except ConnectionResetError:
             await _ws.close()
             print('on remove', ConnectionResetError)
