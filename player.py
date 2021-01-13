@@ -2,26 +2,29 @@
 The player class for Francesca Woodman. Plays and stops wav files. That's it.
 """            
 from pygame import mixer as m
+import configparser
 
 m.init()
+
 
 class Player():
     """Class to play the audio files and store references to the playing stream"""
     
-    def __init__(self, hostname, config):
+    def __init__(self, hostname):
         self._playobj = None
         self._name = hostname
-        self._config = config
+        self._config = configparser.ConfigParser()
         self._currentComm = -1
         
         
     def play(self, radio, num, extra_radios, debug=False):
         """Play a music file by mapping the incomming command to a music file as defined in the config.ini"""
+        self._config.read('config.ini')
         if int(num) == 127:
             self._currentComm = -1
             m.music.fadeout(self._config['client'].getint('fadeout'))            
         else:
-            decoded = self.decodeMsg(radio, num, extra_radios)
+            decoded = self.decodeMsg(radio, num, extra_radios, self._config)
     
             if self.conditionToPlay(decoded) or self._config['radios'].get(str(radio)) == 'all':
                 
@@ -55,13 +58,13 @@ class Player():
                     m.music.fadeout(self._config['client'].getint('fadeout'))
                 
     
-    def decodeMsg(self, chan, num, vel, debug=False):
+    def decodeMsg(self, chan, num, vel, config, debug=False):
         """decodes the incoming midi note on msg based on the ini file"""
         extra_radios = []
         radios = []
         tracks = []
         try:
-            radios = [ x.strip() for x in self._config['radios'].get(str(chan)).split(',') ]
+            radios = [ x.strip() for x in config['radios'].get(str(chan)).split(',') ]
         except AttributeError:
             print(f'radio number: {chan} is not mapped in ini file')
             

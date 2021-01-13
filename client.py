@@ -13,7 +13,7 @@ uri = f'http://{ip}:8080/ws'
 
 hostname = socket.gethostname()
 current_command = -1
-player = Player(hostname, config)
+player = Player(hostname)
 
 async def woodmanClient(debug=False):
     
