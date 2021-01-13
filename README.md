@@ -29,6 +29,14 @@ The server will be listening to any incoming midi device that is connected (befo
 `python3 client.py` will launch a client that receives the command via websockets
 
 
+## Web Interface ##
+Once the server is booted visit 
+
+http://localhost:8080
+
+on any browser to open the web interface.
+
+
 ## troubleshooting ## 
 
 #### the clients are not connecting to the server? ####

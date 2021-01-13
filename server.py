@@ -52,7 +52,6 @@ async def websocket_handler(request):
         except ConnectionResetError:
             await _ws.close()
             print('on remove', ConnectionResetError)
-    
 
     return ws
 

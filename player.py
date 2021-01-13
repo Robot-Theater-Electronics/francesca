@@ -15,6 +15,7 @@ class Player():
         self._name = hostname
         self._config = configparser.ConfigParser()
         self._currentComm = -1
+        self._error = ""
         
         
     def play(self, radio, num, extra_radios, debug=False):
@@ -36,20 +37,21 @@ class Player():
                                 decoded['extra_radios'].index(self._name) % len(decoded['tracks'])]
                             m.music.load("/media/mnt/" + track)
                         except:
-                            print(f"music file {track} doesn't exists")
+                            self._error = f"music file {track} doesn't exists in SD card"
                     else:
                         try: 
                             track = decoded['tracks'][0]
                             m.music.load("/media/mnt/" + track)
                         except:
-                            print(f"music file {track} doesn't exists")
+                            self._error = f"music file {track} doesn't exists in SD card"
                     try:
                         m.music.play()
                     except:
                         print("didn't play...")
                         
                     if debug:
-                        print('playing', radio, num)
+                        if self._error != '':
+                            print('playing', radio, num)
                     #self._playobj.wait_done()
                 else:
                     if debug:

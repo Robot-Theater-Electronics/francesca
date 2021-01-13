@@ -3,6 +3,7 @@ import json
 import configparser
 import aiohttp
 import socket
+import subprocess
 from player import Player
 
 # parse config
@@ -21,7 +22,7 @@ async def woodmanClient(debug=False):
     
     async with session.ws_connect(uri) as ws:
         
-        await ws.send_json(hostname)
+        await ws.send_json({'type': "conn", 'hostname': hostname})
 
         async for msg in ws:
             
@@ -31,6 +32,15 @@ async def woodmanClient(debug=False):
                     player.play(decoded['radio'], 
                                 decoded['comm'],
                                 decoded['extra_radios'], True)
+                    if player._error != '':
+                        await ws.send_json({'type': "error", 'hostname': hostname, 'msg': player._error})
+                        player._error = ''
+                    
+                if 'bash' in decoded:
+                    if decoded['bash'] == 'pull':
+                        git = subprocess.run('./gitpull.sh', capture_output=True)
+                        await ws.send_json({'type': "bash", 'hostname': hostname, 'msg': git.stdout.decode('utf-8').strip()})
+                    
                 if debug:
                     print(msg)
 
