@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import aiohttp
 from aiohttp import web
 import aiohttp_jinja2
@@ -12,7 +14,6 @@ import datetime
 queue = asyncio.Queue()
 RADIOS = 0
 REMOTES = {}
-
 
 ######################
 ## Aiohttp Handlers ##
@@ -76,11 +77,12 @@ async def websocket_handler(request):
 ## MIDI ##
 ##########
 
-def midiIn():   
+def midiIn(): 
     with mido.open_input() as port:
         for msg in port:
             queue.put_nowait(msg)
-            print('queue size: ', queue.qsize())
+            print('queue size: ', queue.qsize())        
+    
             
 async def getQueue(debug:False):
     while True: #investigate if loop is needed
@@ -101,9 +103,14 @@ async def radioCommand(msg):
             queue.task_done()
         
 
-##########
-## WEBA ##
-##########
+async def midi_shutdown(app):
+    print("midi should close")
+    
+
+
+#############
+## WEB APP ##
+#############
 
 app = web.Application()
 app.add_routes([web.get('/', handle),
@@ -114,6 +121,8 @@ app.add_routes([web.get('/', handle),
 aiohttp_jinja2.setup(
     app, loader=jinja2.FileSystemLoader("templates")
 )
+
+app.on_shutdown.append(midi_shutdown)
 
 if __name__ == '__main__':
     #threading.Thread(target=midiIn, daemon=True).start()
