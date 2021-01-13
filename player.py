@@ -28,11 +28,11 @@ class Player():
                 if self._currentComm != num:
                     self._currentComm = num
                     if self._name in decoded['extra_radios']:
-                        m.music.load("music_files/" + decoded['tracks'][
+                        m.music.load("/media/mnt/" + decoded['tracks'][
                             decoded['extra_radios'].index(self._name) % len(decoded['tracks'])
                         ])
                     else:
-                        m.music.load("music_files/" + decoded['tracks'][0])
+                        m.music.load("/media/mnt/" + decoded['tracks'][0])
                     m.music.play()
                     if debug:
                         print('playing', radio, num)
