@@ -14,12 +14,6 @@ socket.onmessage = function(event) {
           len.innerText = radios.length;
           showRadios();
           console.log(radios)
-        } else if ( json['type'] == "disconnected") {
-          radios.splice(radios.indexOf(json['ip']), 1);
-          status = document.getElementById('len');
-          len.innerText = radios.length;
-          showRadios();
-          console.log(radios)
         } else {
           if (json['type'] == "error") {
             log.innerHTML += "<span style='color: red'><b>" + json['hostname'] + ":</b> " + json['msg'] + "</span><br>";
@@ -27,8 +21,16 @@ socket.onmessage = function(event) {
             log.innerHTML += "<span><b>" + json['hostname'] + ":</b> " + json['msg'] + "</span><br>";
           }
         }
+      } else {
+        if ( json['type'] == "alive") {
+          radios = json['radios']
+          status = document.getElementById('len');
+          len.innerText = radios.length;
+          showRadios();
+          console.log(radios)
       }
     }
+  }
 };
 
 
@@ -45,7 +47,9 @@ function updateRadios() {
 
 function showRadios() {
   let container = document.getElementById('radios');
+  let html = "";
   radios.forEach(function(e) {
-    container.innerHTML = "<p>" + e + "</p>";
+    html += "<p>" + e + "</p>";
+    container.innerHTML = html
   });
 }

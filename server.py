@@ -10,7 +10,7 @@ import datetime
 
 #q = queue.Queue()
 queue = asyncio.Queue()
-RADIOS = []
+RADIOS = 0
 REMOTES = {}
 
 
@@ -26,11 +26,15 @@ async def handle(request):
 async def websocket_handler(request):
     ws = web.WebSocketResponse()
     await ws.prepare(request)
-    RADIOS.append(ws) 
     
-    if request.remote not in REMOTES and request.remote != '127.0.0.1':
-        REMOTES[request.remote] = ws
-        
+    if request.remote not in REMOTES:
+        if 'Origin' in request.headers:
+            REMOTES['web'] = ws
+        else: 
+            REMOTES[request.remote] = ws
+    
+    RADIOS = len(REMOTES)
+    
     async for msg in ws:
         print('ws server msg:', msg)
         for _ws in REMOTES:
@@ -47,22 +51,33 @@ async def websocket_handler(request):
             print('ws connection closed with exception %s' %
                   ws.exception())
 
-    RADIOS.remove(ws)
-    pop = None
+    closed = []
     #if request.remote in REMOTES:
-        #REMOTES.pop(request.remote)
+    #REMOTES.pop(request.remote)
     for _ws in REMOTES:
-        try:
-            print(len(REMOTES))
-            print(REMOTES[_ws].closed)
-            await REMOTES[_ws].send_json({'type': "disconnected", 'ip': request.remote})
-        except ConnectionResetError:
+        if REMOTES[_ws].closed:
+            #await REMOTES[_ws].send_json({'type': "disconnected", 'ip': _ws})
             await REMOTES[_ws].close()
-            pop = _ws
-            print('on remove', ConnectionResetError)
-            
-    if pop != None:
-        REMOTES.pop(pop)
+            closed.append(_ws)
+            #print(len(REMOTES))
+            #print(REMOTES[_ws].closed)
+        #except ConnectionResetError:
+            #await REMOTES[_ws].send_json({'type': "disconnected", 'ip': _ws})
+            #await REMOTES[_ws].close()
+            #pop = _ws
+            #print('on remove', ConnectionResetError)
+    
+    for c in closed:
+        if c == '127.0.0.1':
+            RADIOS -= 1
+        REMOTES.pop(c) 
+
+    if len(REMOTES) < RADIOS:    
+        # notify the web interface 
+        if 'web' in REMOTES:
+            connected_radios = list(REMOTES)
+            connected_radios.remove('web')
+            await REMOTES['web'].send_json({'type': "alive", 'radios': connected_radios})
     
     return ws
 
