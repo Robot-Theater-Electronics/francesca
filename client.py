@@ -20,12 +20,10 @@ player = Player(hostname)
 async def woodmanClient(debug=False):
     connected = False
     while not connected:
-        try:
-            session = aiohttp.ClientSession()
+        session = aiohttp.ClientSession()
             
+        try:
             async with session.ws_connect(uri) as ws:
-                
-                connected = True
                 
                 await ws.send_json({'type': "conn", 'hostname': hostname})
         
