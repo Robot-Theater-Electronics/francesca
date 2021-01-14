@@ -11,7 +11,7 @@ from player import Player
 # parse config
 working_dir = os.getcwd()
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read('/home/ubuntu/francesca/config.ini')
 ip = config['server'].get('ip')
 uri = f'http://{ip}:8080/ws'
 
