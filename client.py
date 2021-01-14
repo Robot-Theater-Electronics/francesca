@@ -11,13 +11,13 @@ from player import Player
 # parse config
 working_dir = os.getcwd()
 config = configparser.ConfigParser()
-config.read('/home/ubuntu/francesca/config.ini')
+config.read(f'{working_dir}/config.ini')
 ip = config['server'].get('ip')
 uri = f'http://{ip}:8080/ws'
 
 hostname = socket.gethostname()
 current_command = -1
-player = Player(hostname)
+player = Player(hostname, working_dir)
 
 async def woodmanClient(debug=False):
     connected = False
@@ -43,7 +43,7 @@ async def woodmanClient(debug=False):
                             
                         if 'bash' in decoded:
                             if decoded['bash'] == 'pull':
-                                git = subprocess.run('./gitpull.sh', capture_output=True)
+                                git = subprocess.run(f'{working_dir}/gitpull.sh', capture_output=True)
                                 await ws.send_json({'type': "bash", 'hostname': hostname, 'msg': git.stdout.decode('utf-8').strip()})
                             
                         if debug:

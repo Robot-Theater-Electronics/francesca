@@ -10,17 +10,18 @@ m.init()
 class Player():
     """Class to play the audio files and store references to the playing stream"""
     
-    def __init__(self, hostname):
+    def __init__(self, hostname, directory):
         self._playobj = None
         self._name = hostname
         self._config = configparser.ConfigParser()
         self._currentComm = -1
         self._error = ""
+        self._dir = directory
         
         
     def play(self, radio, num, extra_radios, debug=False):
         """Play a music file by mapping the incomming command to a music file as defined in the config.ini"""
-        self._config.read('config.ini')
+        self._config.read(f'{wdir}/config.ini')
         if int(num) == 127:
             self._currentComm = -1
             m.music.fadeout(self._config['client'].getint('fadeout'))            
