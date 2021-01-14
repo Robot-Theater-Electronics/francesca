@@ -5,11 +5,14 @@ import aiohttp
 import socket
 import subprocess
 import time
+import os
 from player import Player
 
 # parse config
+working_dir = os.getcwd()
+CURR_DIR = os.getcwd()
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read(f'{working_dir}/config.ini')
 ip = config['server'].get('ip')
 uri = f'http://{ip}:8080/ws'
 
