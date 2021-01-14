@@ -21,7 +21,7 @@ class Player():
         
     def play(self, radio, num, extra_radios, debug=False):
         """Play a music file by mapping the incomming command to a music file as defined in the config.ini"""
-        self._config.read(f'{wdir}/config.ini')
+        self._config.read(f'{self._dir}/config.ini')
         if int(num) == 127:
             self._currentComm = -1
             m.music.fadeout(self._config['client'].getint('fadeout'))            
