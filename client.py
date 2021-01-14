@@ -9,7 +9,7 @@ import os
 from player import Player
 
 # parse config
-working_dir = os.getcwd()
+working_dir = '/home/ubuntu/francesca'
 config = configparser.ConfigParser()
 config.read(f'{working_dir}/config.ini')
 ip = config['server'].get('ip')
