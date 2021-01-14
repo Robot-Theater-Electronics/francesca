@@ -9,7 +9,7 @@ import os
 from player import Player
 
 # parse config
-working_dir = '/home/ubuntu/francesca'
+working_dir = os.getcwd()
 config = configparser.ConfigParser()
 config.read(f'{working_dir}/config.ini')
 ip = config['server'].get('ip')
@@ -18,15 +18,25 @@ uri = f'http://{ip}:8080/ws'
 hostname = socket.gethostname()
 current_command = -1
 player = Player(hostname, working_dir)
+connected = False
 
 async def woodmanClient(debug=False):
-    #connected = False
-    #while not connected:
-        #try:
-    session = aiohttp.ClientSession()
-    
-    async with session.ws_connect(uri) as ws:
+    while not connected:
+        session = aiohttp.ClientSession()
+        try:
+            
+            await websocket(session, debug)
+            
+        except aiohttp.client_exceptions.ClientConnectorError:
+            print("reconnecting..")
+            await session.close()
+
+        time.sleep(1)
         
+
+async def websocket(session=None, debug=False):
+    async with session.ws_connect(uri) as ws:
+        connected = True
         await ws.send_json({'type': "conn", 'hostname': hostname})
     
         async for msg in ws:
@@ -51,13 +61,7 @@ async def woodmanClient(debug=False):
     
             if msg.type in (aiohttp.WSMsgType.CLOSED,
                             aiohttp.WSMsgType.ERROR):
-                break
-        #except :
-            #print("reconnecting..")
-            #await session.close()
-        
-        #time.sleep(1)
-
+                break    
     
 loop = asyncio.get_event_loop()
 loop.run_until_complete(woodmanClient(True))
