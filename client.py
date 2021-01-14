@@ -5,11 +5,11 @@ import aiohttp
 import socket
 import subprocess
 import time
-import os
+import pathlib
 from player import Player
 
 # parse config
-working_dir = os.getcwd()
+working_dir = pathlib.Path(__file__).parent.absolute()
 config = configparser.ConfigParser()
 config.read(f'{working_dir}/config.ini')
 ip = config['server'].get('ip')
