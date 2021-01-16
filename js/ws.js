@@ -60,3 +60,7 @@ function showRadios() {
     container.innerHTML = html
   });
 }
+
+function refreshLog() {
+window.location.reload();
+}
