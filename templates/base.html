@@ -11,10 +11,11 @@
             <p>Date now: {{ current_date }}</p>
         </div>
         <div>
+            <button onclick='queryRadios()'>Query all radios</button>
             <button onclick='updateRadios()'>Update all radios</button>
         </div>
                 <div>
-            <p>Current connected radios: <span id='len'>{{ connected }}</span></p>
+            <p>Currently connected radios: <span id='len'>{{ connected }}</span></p>
         </div>
         <div id='radios'>
             {% for radio in radios %}

@@ -55,6 +55,10 @@ async def websocket(session=None, debug=False):
                     if decoded['bash'] == 'pull':
                         git = subprocess.run(f'{working_dir}/gitpull.sh', capture_output=True)
                         await ws.send_json({'type': "bash", 'hostname': hostname, 'msg': git.stdout.decode('utf-8').strip()})
+                        
+                if 'bash' in decoded:
+                    if decoded['bash'] == 'query':
+                        await ws.send_json({'type': "bash", 'hostname': hostname, 'msg': 'connected'})                
                     
                 if debug:
                     print(msg)

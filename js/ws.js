@@ -45,6 +45,13 @@ function updateRadios() {
   socket.send(JSON.stringify(a));
 }
 
+function queryRadios() {
+  console.log("querying radios")
+  a = {};
+  a['bash'] = "query";
+  socket.send(JSON.stringify(a));
+}
+
 function showRadios() {
   let container = document.getElementById('radios');
   let html = "";
