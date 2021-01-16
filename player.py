@@ -38,13 +38,13 @@ class Player():
                                 decoded['extra_radios'].index(self._name) % len(decoded['tracks'])]
                             m.music.load("/media/mnt/" + track)
                         except:
-                            self._error = f"music file {track} doesn't exists in SD card"
+                            self._error = f"music file doesn't exists in SD card"
                     else:
                         try: 
                             track = decoded['tracks'][0]
                             m.music.load("/media/mnt/" + track)
                         except:
-                            self._error = f"music file {track} doesn't exists in SD card"
+                            self._error = f"music file doesn't exists in SD card"
                     try:
                         m.music.play()
                     except:
