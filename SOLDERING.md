@@ -1,4 +1,4 @@
-# Soldering Instrutions 
+# Soldering Instructions 
 
 ### To solder the components of each alarm clock you will need the following tools:
 
