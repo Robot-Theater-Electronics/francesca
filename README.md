@@ -1,6 +1,6 @@
-# Francesca Woodman Theater Performance (work in progress)#
+# Francesca Woodman Theater Performance#
 
-## software for audio LAN installation ##
+## Software for audio LAN installation with hacked retro alarm clocks and websockets ##
 
 ### requirements ###
 for midi input (so the server side)
