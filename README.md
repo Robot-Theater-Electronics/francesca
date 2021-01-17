@@ -15,7 +15,7 @@ for the web interface
 
 `pip3 install aiohttp_jinja2`
 
-for playing the music files 
+for playing the music files
 
 `pip3 install pygame`
 
@@ -30,15 +30,21 @@ The server will be listening to any incoming midi device that is connected (befo
 
 
 ## Web Interface ##
-Once the server is booted visit 
+Once the server is booted visit
 
 http://localhost:8080
 
 on any browser to open the web interface.
 
 
-## troubleshooting ## 
+## Soldering new alarm clocks ##
+(Soldering readme)[SOLDERING.md]
+
+## Adding new music files to the alarm clocks ##
+(Music readme)[music_files/README.md]
+
+## troubleshooting ##
 
 #### the clients are not connecting to the server? ####
   - Make sure the performance router is ON and the computer running the server is connected to it
-  - Make sure the computer running the server has no firewall blocking the connections 
+  - Make sure the computer running the server has no firewall blocking the connections
