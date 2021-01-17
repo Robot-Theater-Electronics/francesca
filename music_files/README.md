@@ -1,7 +1,7 @@
-# You can put your .wav music files here
+# You can put your .wav music files inside this directory.
 ## But to be able to have the alarm clocks play them it is important to upload them to the alarm clocks. You can do that as follows:
 
-### in the terminal, naviagte to this directory (make sure you write your correct path to the folder):
+### In the terminal, naviagte to this directory (make sure you write your correct path to the folder):
 
 `cd /your/path/francesca/music_files`
 

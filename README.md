@@ -38,10 +38,10 @@ on any browser to open the web interface.
 
 
 ## Soldering new alarm clocks ##
-[Soldering readme!](SOLDERING.md)
+[Soldering readme](SOLDERING.md)
 
 ## Adding new music files to the alarm clocks ##
-[Music readme!](music_files/README.md)
+[Music readme](music_files/README.md)
 
 ## troubleshooting ##
 
