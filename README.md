@@ -34,8 +34,7 @@ Once the server is booted visit
 
 http://localhost:8080
 
-on any browser to open the web interface.
-
+on any browser to open the web interface to monitor and manage the alarm clocks.
 
 ## Soldering new alarm clocks ##
 [Soldering readme](SOLDERING.md)
@@ -46,5 +45,22 @@ on any browser to open the web interface.
 ## troubleshooting ##
 
 #### the clients are not connecting to the server? ####
+  - Make sure the laptop is connected to the router network. SSID is "nacho"
   - Make sure the performance router is ON and the computer running the server is connected to it
   - Make sure the computer running the server has no firewall blocking the connections
+  - Make sure that the IP of the server is correct in the config.ini file:
+    - first check your ip addres:
+    [check you ip](images/ipcheck.png)
+    - then make sure the config.ini file has the same ip you just checked:
+    [ip in onfig.ini](images/ipini.png)
+
+#### A single radio is not connecting? ####
+  - Once you spot which radio is not connecting you do 2 things.
+  1. Turn the radio off and then on again. It should work.
+  2. If the above doesn't work you can force it to connect manually. Do as follows:
+    - Open the terminal and log in to the specific alarm clock (let's assume alarm clock 8 is the target):
+    `ssh ubuntu@radio8.local`
+    the type the password: francesca
+    Once logged in type the following command:
+    `sudo systemctl restart radio.service`
+    Then radio8 will appear as connected in the web interface.
