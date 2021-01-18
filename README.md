@@ -40,7 +40,7 @@ on any browser to open the web interface to monitor and manage the alarm clocks.
 ## Soldering new alarm clocks ##
 [Soldering readme](SOLDERING.md)
 
-## Adding new music files to the alarm clocks ##
+## Adding new music files to the alarm clocks and playing them ##
 [Music readme](music_files/README.md)
 
 ## troubleshooting ##
