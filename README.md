@@ -1,6 +1,7 @@
 # Francesca Woodman Theater Performance#
 
 ## Software for audio LAN installation with hacked retro alarm clocks and websockets ##
+![alarm clocks](images/alarmclocks.JPG)
 
 ### requirements ###
 for midi input (so the server side)
@@ -50,9 +51,9 @@ on any browser to open the web interface to monitor and manage the alarm clocks.
   - Make sure the computer running the server has no firewall blocking the connections
   - Make sure that the IP of the server is correct in the config.ini file:
     - first check your ip addres:
-    [check you ip](images/ipcheck.png)
+    ![check you ip](images/ipcheck.png)
     - then make sure the config.ini file has the same ip you just checked:
-    [ip in onfig.ini](images/ipini.png)
+    ![ip in onfig.ini](images/ipini.png)
 
 #### A single radio is not connecting? ####
   - Once you spot which radio is not connecting you do 2 things.
