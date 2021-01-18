@@ -15,3 +15,6 @@ In the example above we copied the file noise1.wav to radio3. You can repeat the
 different radios by replacing the title of the file and the radio number. For example, to copy to radio2:
 
 `scp noise1.wav ubunut@radio2:/media/mnt/`
+
+# How to make the alarm clocks play new files #
+[Qlan readme](qlab/README.md)
