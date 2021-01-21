@@ -4,6 +4,11 @@
 ![alarm clocks](images/alarmclocks.JPG)
 
 ### requirements ###
+
+python3 
+
+[https://www.python.org/downloads/](https://www.python.org/downloads/)
+
 for midi input (so the server side)
 
 `pip3 install mido`
