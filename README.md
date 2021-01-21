@@ -3,7 +3,7 @@
 ## Software for audio LAN installation with hacked retro alarm clocks and websockets ##
 ![alarm clocks](images/alarmclocks.JPG)
 
-### requirements ###
+## requirements
 
 python3 
 
