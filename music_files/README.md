@@ -17,4 +17,4 @@ different radios by replacing the title of the file and the radio number. For ex
 `scp noise1.wav ubunut@radio2:/media/mnt/`
 
 # How to make the alarm clocks play new files #
-[Qlan readme](qlab/README.md)
+[Qlan readme](../qlab/README.md)
