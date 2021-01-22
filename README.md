@@ -13,6 +13,10 @@ for midi input (so the server side)
 
 `pip3 install mido`
 
+maybe you will need this backend for mido too
+
+`pip3 install mido`
+
 for websockets to communicate to the radios in LAN (for the server and the clients)
 
 `pip3 install aiohttp`
