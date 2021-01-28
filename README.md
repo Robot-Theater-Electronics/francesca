@@ -1,11 +1,11 @@
-# Francesca Woodman Theater Performance#
+# Francesca Woodman Theater Performance
 
 ## Software for audio LAN installation with hacked retro alarm clocks and websockets ##
 ![alarm clocks](images/alarmclocks.JPG)
 
 ## requirements
 
-python3 
+python3
 
 [https://www.python.org/downloads/](https://www.python.org/downloads/)
 
@@ -15,7 +15,7 @@ for midi input (so the server side)
 
 maybe you will need this backend for mido too
 
-`pip3 install mido`
+`pip3 install python-rtmidi`
 
 for websockets to communicate to the radios in LAN (for the server and the clients)
 
