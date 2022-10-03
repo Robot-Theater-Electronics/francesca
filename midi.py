@@ -132,6 +132,8 @@ if __name__ == '__main__':
     # print(queue)
     # threading.Thread(target=midiIn, daemon=True).start()
     try:
-        web.run_app(app)
+        loop = asyncio.get_event_loop()
+        loop.run_in_executor(None, midiIn)
+        asyncio.run(getQueue(True))
     except Exception as e:
         print(e)
